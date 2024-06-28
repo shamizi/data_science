@@ -1,50 +1,60 @@
+import pandas as pd
 import psycopg2
 import matplotlib.pyplot as plt
-from datetime import datetime
 
+def analyse_data(database, user, password, host, port, table_name):
+    # Connexion à la base de données PostgreSQL
+    conn = psycopg2.connect(
+        dbname=database,
+        user=user,
+        password=password,
+        host=host,
+        port=port
+    )
+    cur = conn.cursor()
+    print("connected")
+    # Requête SQL pour récupérer les achats de la période spécifiée
+    query = f"""
+    SELECT event_time::date AS event_date, COUNT(DISTINCT user_id) AS buyer_count, SUM(price) AS prix
+    FROM {table_name}
+    WHERE event_type = 'purchase' 
+    GROUP BY event_date
+    ORDER BY event_date;
+    """
+
+    cur.execute(query)
+    data = cur.fetchall()
+    print("query executed")
+    # Convertir les données en DataFrame Pandas
+    df = pd.DataFrame(data, columns=['event_date', 'buyer_count', 'prix'])
+    df['event_date'] = pd.to_datetime(df['event_date'])
+    cur.close()
+    conn.close()
+
+    # Tracer la courbe avec Matplotlib
+    plt.plot(df['event_date'], df['buyer_count'], marker=None)
+    plt.ylabel('Number of customers')
+    plt.grid(True)
+
+    # Customiser les étiquettes de l'axe X pour afficher uniquement Octobre, Novembre, Décembre, Janvier
+    dates = pd.date_range(start='2022-10-01', end='2023-01-31', freq='MS').strftime("%b").tolist()
+    plt.xticks(pd.date_range(start='2022-10-01', end='2023-01-31', freq='MS'), dates, rotation=45)
+
+    plt.tight_layout()
+    plt.show()
+
+    ##calcul recette par mois
+    df['month'] = df['event_date'].dt.to_period('M')
+    monthly_revenue = df.groupby('month')['prix'].sum() / 1e6
+    print("monthly revenue :", monthly_revenue)
+
+# Paramètres de la base de données
 database = "piscineds"
 user = "shamizi"
 password = "mysecretpassword"
 host = "localhost"
 port = "5432"
-table_name = "tmp"  # Remplacez par le nom de votre table
-column_name = "event_type"
+table_name = "foranalyse"
 
-def calculate_pourcent(database, user, password, host, port, table_name, column_name):
-    try:
-        conn = psycopg2.connect(
-            dbname=database,
-            user=user,
-            password=password,
-            host=host,
-            port=port
-        )
-        cur = conn.cursor()
-
-        cur.execute(f"""
-            SELECT event_time, price FROM {table_name} WHERE {column_name} = 'cart';
-            """)
-        selection = cur.fetchall()
-##compter le nombre d'evenement par date
-        dates = [row[0] for row in selection]
-        event_per_date = {}
-        for date in dates:
-            date_str = date.strftime('%Y-%m-%d')
-            if date_str in event_per_date:
-                event_per_date[date_str] += 1
-            else:
-                event_per_date[date_str] = 1
-        print(event_per_date)
-
-        # fig, ax = plt.subplots()
-        # plt.show()
-
-    except Exception as e:
-        print(e)
-    finally:
-        if cur:
-            cur.close()
-        if conn:
-            conn.close()
-
-calculate_pourcent(database, user, password, host, port, table_name, column_name)
+# Appel de la fonction
+analyse_data(database, user, password, host, port, table_name)

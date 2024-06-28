@@ -7,9 +7,9 @@ user = "shamizi"
 password = "mysecretpassword"
 host = "localhost"
 port = "5432"
-table_name = "pourtest"  # Remplacez par le nom de votre table
+table_name = "foranalyse"  # Remplacez par le nom de votre table
 column_name = "event_type"
-
+##peut etre changer la selection pour ajouter distinct
 def calculate_pourcent(database, user, password, host, port, table_name, column_name):
     try:
         conn = psycopg2.connect(
@@ -38,7 +38,7 @@ def calculate_pourcent(database, user, password, host, port, table_name, column_
         #print("% :", event_percentage) #name / nombre d'occurence / %
         labels = [event[0] for event in event_percentage]
         percentages = [event[2] for event in event_percentage]
-        ax = plt.subplots()
+        fig, ax = plt.subplots()
         ax.pie(percentages, labels=labels, autopct='%1.1f%%')
         plt.show()
 
