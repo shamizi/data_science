@@ -10,7 +10,7 @@ user = "shamizi"
 password = "mysecretpassword"
 host = "localhost"
 port = "5432"
-table_name = "data_2022_oct" #changer le nom
+table_name = "customers" #changer le nom
 
 def delete_duplicate(database, user, password, host, port, table_name):
     logging.info("Début de la suppression des doublons")
@@ -25,20 +25,17 @@ def delete_duplicate(database, user, password, host, port, table_name):
             port=port
         )
         cur = conn.cursor()
-
-        cur.execute(f"""CREATE TABLE pourtest AS SELECT DISTINCT * FROM {table_name};""")
+        cur.execute(f"""CREATE TEMPORARY TABLE tmp AS SELECT DISTINCT * FROM {table_name};
+                CREATE TABLE IF NOT EXISTS clean(
+                event_time TIMESTAMP,
+                event_type VARCHAR(255),
+                product_id INT,
+                price FLOAT,
+                user_id BIGINT,
+                user_session TEXT
+                );
+                    INSERT INTO clean SELECT * FROM tmp;""")
         conn.commit()
-        tables_to_insert = ["data_2022_nov", "data_2022_dec", "data_2023_jan"]
-        for table in tables_to_insert:
-            cur.execute(f"""INSERT INTO pourtest (SELECT DISTINCT * FROM {table});""")
-            conn.commit()
-            print(f"Données de {table} insérées dans pourtest")
-
-        conn.commit()
-        # cur.execute(f"""CREATE TEMPORARY TABLE tmp AS SELECT DISTINCT * FROM {table_name};
-        #             TRUNCATE {table_name};
-        #             INSERT INTO {table_name} SELECT * FROM tmp;""")
-        # conn.commit()
         logging.info("Suppression des doublons terminée avec succès.")
     except Exception as e:
         logging.error(f"Erreur lors de la suppression des doublons : {e}")

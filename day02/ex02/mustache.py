@@ -33,7 +33,7 @@ def analyse_data(database, user, password, host, port, table_name):
     min_price = df['price'].min()
     max_price = df['price'].max()
     first_quartile = df['price'].quantile(0.25)
-    second_quartile = df['price'].quantile(0.5)  # Correspond à la médiane
+    second_quartile = df['price'].median()  # Correspond à la médiane
     third_quartile = df['price'].quantile(0.75)
 
     print(f"count {count:.6f}") #parenthese a count surement
@@ -82,7 +82,7 @@ user = "shamizi"
 password = "mysecretpassword"
 host = "localhost"
 port = "5432"
-table_name = "foranalyse"
+table_name = "customers"
 
 # Appel de la fonction
 analyse_data(database, user, password, host, port, table_name)

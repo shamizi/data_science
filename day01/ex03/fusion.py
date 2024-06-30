@@ -10,7 +10,7 @@ user = "shamizi"
 password = "mysecretpassword"
 host = "localhost"
 port = "5432"
-table_name = "pourtest" #changer le nom 
+table_name = "customers" #changer le nom 
 
 def fusion(database, user, password, host, port, table_name):
     logging.info("Début de la création de la table temporaire et de la fusion des données")

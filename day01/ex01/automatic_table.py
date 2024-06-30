@@ -8,9 +8,9 @@ user = "shamizi"
 password = "mysecretpassword"
 host = "localhost"
 port = "5432"
-table_name = "pourtest"
+table_name = "nofeb"
 
-folder_path = 'C:/Users/said/Desktop/data_science/day01/ex01/customer'
+folder_path = '../subject/customer'
 csv_path = []
 
 for file in os.listdir(folder_path):
@@ -27,13 +27,13 @@ conn = psycopg2.connect(
 )
 
 cur = conn.cursor()
-
+#numeric plus pr2cis que float mais moins rapide
 for path in csv_path:
     cur.execute(f"""CREATE TABLE IF NOT EXISTS {table_name}(
                 event_time TIMESTAMP,
                 event_type VARCHAR(255),
                 product_id INT,
-                price NUMERIC,
+                price FLOAT,
                 user_id BIGINT,
                 user_session TEXT
                 )
