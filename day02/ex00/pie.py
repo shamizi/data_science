@@ -6,8 +6,9 @@ database = "piscineds"
 user = "shamizi"
 password = "mysecretpassword"
 host = "localhost"
+# table_name = "customers" 
+table_name = "nofeb" 
 port = "5432"
-table_name = "foranalyse"  # Remplacez par le nom de votre table
 column_name = "event_type"
 ##peut etre changer la selection pour ajouter distinct
 def calculate_pourcent(database, user, password, host, port, table_name, column_name):

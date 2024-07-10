@@ -29,6 +29,7 @@ def analyse_data(database, user, password, host, port, table_name):
   
     df = pd.DataFrame(data, columns=['event_date', 'buyer_count', 'total_price'])
     df['event_date'] = pd.to_datetime(df['event_date'])  # Conversion en type datetime
+    df = df[df['event_date'] <= pd.Timestamp('2023-01-31')]
 
     cur.close()
     conn.close()
@@ -40,8 +41,8 @@ def analyse_data(database, user, password, host, port, table_name):
 
     # Customiser les étiquettes de l'axe X pour afficher uniquement Octobre, Novembre, Décembre, Janvier
     dates = pd.date_range(start='2022-10-01', end='2023-01-31', freq='MS').strftime("%b").tolist()
-    plt.xticks(pd.date_range(start='2022-10-01', end='2023-01-31', freq='MS'), dates, rotation=45)
-    
+    plt.xticks(pd.date_range(start='2022-10-01', end='2023-01-31', freq='MS'), dates, rotation=0)
+    plt.xlim(df['event_date'].min(), df['event_date'].max())
     plt.tight_layout()
     plt.show()
 
@@ -57,6 +58,7 @@ def analyse_data(database, user, password, host, port, table_name):
     dates = pd.date_range(start='2022-10-01', end='2023-01-31', freq='MS').strftime("%b").tolist()
     plt.xticks(pd.date_range(start='2022-10-01', end='2023-01-31', freq='MS'), dates, rotation=45)
     plt.yticks(range(0, int(spent_per_customer.max()) + 5, 5))
+    plt.xlim(df['event_date'].min(), df['event_date'].max())
     plt.grid(True)
     plt.tight_layout()
     plt.show()
@@ -82,7 +84,7 @@ user = "shamizi"
 password = "mysecretpassword"
 host = "localhost"
 port = "5432"
-table_name = "foranalyse"
+table_name = "customers"
 
 # Appel de la fonction
 analyse_data(database, user, password, host, port, table_name)
