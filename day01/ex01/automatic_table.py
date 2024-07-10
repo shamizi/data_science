@@ -8,7 +8,7 @@ user = "shamizi"
 password = "mysecretpassword"
 host = "localhost"
 port = "5432"
-table_name = "pourtest"
+table_name = "foranalyse"
 
 folder_path = 'C:/Users/said/Desktop/data_science/day01/ex01/customer'
 csv_path = []

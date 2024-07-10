@@ -36,14 +36,17 @@ def analyse_data(database, user, password, host, port, table_name):
     second_quartile = df['price'].quantile(0.5)  # Correspond à la médiane
     third_quartile = df['price'].quantile(0.75)
 
-    print(f"count {count:.6f}") #parenthese a count surement
-    print(f"mean {mean_price:.6f}")
-    print(f"std {std_price:.6f}")
-    print(f"min {min_price:.6f}")
-    print(f"25% {first_quartile:.6f}")
-    print(f"50% {second_quartile:.6f}")
-    print(f"75% {third_quartile:.6f}")
-    print(f"max {max_price:.6f}")
+    print("\nStatistiques descriptives:")
+    res = df.describe()
+    print(f"{res:.6f}")
+    # print(f"count {count:.6f}") #parenthese a count surement
+    # print(f"mean {mean_price:.6f}")
+    # print(f"std {std_price:.6f}")
+    # print(f"min {min_price:.6f}")
+    # print(f"25% {first_quartile:.6f}")
+    # print(f"50% {second_quartile:.6f}")
+    # print(f"75% {third_quartile:.6f}")
+    # print(f"max {max_price:.6f}")
     # plt.boxplot(
     #     df['price'],
     #     vert=False,
